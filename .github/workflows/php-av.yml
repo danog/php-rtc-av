@@ -1,0 +1,77 @@
+name: AV Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Test on ${{ matrix.os }} with PHP ${{ matrix.php }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        php: [8.4]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP with FFI
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: ffi
+          ini-values: ffi.enable=true
+          tools: composer:v2
+
+      # Ubuntu: Compile FFmpeg 7 from source
+      - name: Install FFmpeg 7+ (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            autoconf automake build-essential cmake git libtool \
+            pkg-config texinfo zlib1g-dev libx264-dev libx265-dev \
+            libvpx-dev libfdk-aac-dev libmp3lame-dev libopus-dev
+
+          git clone --depth=1 https://github.com/FFmpeg/FFmpeg.git
+          cd FFmpeg
+          ./configure --enable-shared --enable-gpl --enable-nonfree \
+            --enable-libx264 --enable-libx265 --enable-libvpx \
+            --enable-libfdk-aac --enable-libmp3lame --enable-libopus
+          make -j$(nproc)
+          sudo make install
+          sudo ldconfig
+          ffmpeg -version
+
+      # macOS: Use brew (typically has FFmpeg 7+)
+      - name: Install FFmpeg 7+ (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install ffmpeg
+          ffmpeg -version
+
+      # Windows: Download FFmpeg 7+ from official builds
+      - name: Install FFmpeg 7+ (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          Invoke-WebRequest https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-full.7zip -OutFile ffmpeg.7z
+          7z x ffmpeg.7z -oC:\ffmpeg -y
+          echo "C:\ffmpeg\ffmpeg-*\bin" | Out-File -Append $env:GITHUB_PATH
+          ffmpeg -version
+        shell: pwsh
+
+      - name: Validate environment
+        run: |
+          php -v
+          php -r "echo 'FFI enabled: ' . (extension_loaded('ffi') ? 'yes' : 'no') . PHP_EOL;"
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run tests
+        run: vendor/bin/phpunit
