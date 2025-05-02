@@ -36,6 +36,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-php-
 
+      - name: Install NASM
+        run: sudo apt-get install -y nasm
+
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
