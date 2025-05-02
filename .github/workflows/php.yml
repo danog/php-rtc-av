@@ -58,7 +58,10 @@ jobs:
           ffmpeg -version
 
       - name: Check PHP and FFI status
-        run: php -r "echo 'FFI enabled: ' . (extension_loaded('ffi') ? 'yes' : 'no') . PHP_EOL;"
+        run: |
+          php -v
+          php -r "echo 'FFI enabled: ' . (extension_loaded('ffi') ? 'yes' : 'no') . PHP_EOL;"
+
 
       - name: Run PHPUnit tests
         run: vendor/bin/phpunit
