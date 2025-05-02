@@ -1,4 +1,4 @@
-name: PHP Composer
+name: PHP-AV CI
 
 on:
   push:
@@ -11,29 +11,54 @@ permissions:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Validate composer.json and composer.lock
-      run: composer validate --strict
+      - name: Set up PHP 8.4 with FFI
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          extensions: ffi
+          ini-values: ffi.enable=true
+          tools: composer:v2
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
 
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
 
-    # - name: Run test suite
-    #   run: composer run-script test
+      - name: Install FFmpeg 7+ from source
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            autoconf automake build-essential cmake git libtool \
+            pkg-config texinfo zlib1g-dev libx264-dev libx265-dev \
+            libvpx-dev libfdk-aac-dev libmp3lame-dev libopus-dev
+
+          git clone --depth=1 https://github.com/FFmpeg/FFmpeg.git
+          cd FFmpeg
+          ./configure --enable-shared --enable-gpl --enable-nonfree \
+            --enable-libx264 --enable-libx265 --enable-libvpx \
+            --enable-libfdk-aac --enable-libmp3lame --enable-libopus
+          make -j$(nproc)
+          sudo make install
+          sudo ldconfig
+          ffmpeg -version
+
+      - name: Check PHP and FFI status
+        run: php -r "echo 'FFI enabled: ' . (extension_loaded('ffi') ? 'yes' : 'no') . PHP_EOL;"
+
+      - name: Run PHPUnit tests
+        run: vendor/bin/phpunit
