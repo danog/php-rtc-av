@@ -85,6 +85,10 @@ jobs:
         if: matrix.os == 'windows-latest'
         shell: powershell
         run: |
+          if (Test-Path ffmpeg) {
+            Remove-Item -Recurse -Force ffmpeg
+          }
+
           Invoke-WebRequest -Uri https://github.com/PHP-WebRTC/ffmpeg-builder/releases/download/v7.1.1/ffmpeg-win_amd64.tar.gz -OutFile ffmpeg.tar.gz
           mkdir ffmpeg
           tar -xzf ffmpeg.tar.gz -C ffmpeg
@@ -100,8 +104,6 @@ jobs:
           } else {
             Write-Host "ffmpeg.exe not found."
           }
-      
-      
 
       - name: Check PHP and FFI status
         run: |
