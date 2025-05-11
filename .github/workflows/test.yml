@@ -63,17 +63,21 @@ jobs:
           sudo ldconfig
           ffmpeg -version
 
-      - name: Install FFmpeg 7.1.1 on macOS
+      - name: Install FFmpeg 7.1.1 on macOS (build from source)
         if: matrix.os == 'macos-latest'
         run: |
-          brew install cmake git nasm pkg-config x264 x265 libvpx fdk-aac lame opus
+          brew update
+          brew install automake fdk-aac git lame libass libvorbis libvpx opus sdl2 texi2html theora x264 x265 cmake pkg-config
+
+          rm -rf FFmpeg
           git clone https://github.com/FFmpeg/FFmpeg.git
           cd FFmpeg
           git checkout n7.1.1
-          ./configure --enable-shared --enable-gpl --enable-nonfree \
-            --enable-libx264 --enable-libx265 --enable-libvpx \
-            --enable-libfdk-aac --enable-libmp3lame --enable-libopus
-          make -j$(sysctl -n hw.ncpu)
+
+          ./configure --prefix=/usr/local --enable-shared --enable-gpl --enable-nonfree --enable-libx264 \
+            --enable-libx265 --enable-libvpx --enable-libmp3lame --enable-libfdk-aac --enable-libopus
+
+          make -j$(sysctl -n hw.logicalcpu)
           sudo make install
           ffmpeg -version
 
