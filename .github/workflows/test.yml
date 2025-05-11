@@ -11,7 +11,10 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v4
@@ -39,7 +42,8 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
-      - name: Install FFmpeg 7.1.1
+      - name: Install FFmpeg 7.1.1 on Linux
+        if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt update
           sudo apt install -y \
@@ -57,6 +61,28 @@ jobs:
           make -j$(nproc)
           sudo make install
           sudo ldconfig
+          ffmpeg -version
+
+      - name: Install FFmpeg 7.1.1 on macOS
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install cmake git nasm pkg-config x264 x265 libvpx fdk-aac lame opus
+          git clone https://github.com/FFmpeg/FFmpeg.git
+          cd FFmpeg
+          git checkout n7.1.1
+          ./configure --enable-shared --enable-gpl --enable-nonfree \
+            --enable-libx264 --enable-libx265 --enable-libvpx \
+            --enable-libfdk-aac --enable-libmp3lame --enable-libopus
+          make -j$(sysctl -n hw.ncpu)
+          sudo make install
+          ffmpeg -version
+
+      - name: Install FFmpeg 7.1.1 on Windows (prebuilt)
+        if: matrix.os == 'windows-latest'
+        run: |
+          Invoke-WebRequest -Uri https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-7.1.1-full_build.zip -OutFile ffmpeg.zip
+          Expand-Archive ffmpeg.zip -DestinationPath $env:USERPROFILE\ffmpeg
+          $env:Path += ";$env:USERPROFILE\ffmpeg\ffmpeg-7.1.1-full_build\bin"
           ffmpeg -version
 
       - name: Check PHP and FFI status
