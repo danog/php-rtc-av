@@ -31,7 +31,7 @@ class AVCodec
     /**
      * The path to the AVCodec C header file.
      */
-    private const string HEADER_FILE_PATH = __DIR__ . "/libav/include/avcodec.h";
+    private const string HEADER_FILE_PATH = __DIR__ . "/../ffmpeg/include/avcodec.h";
 
     /**
      * Initializes the AVCodec library.

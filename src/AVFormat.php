@@ -31,7 +31,7 @@ class AVFormat
     /**
      * The path to the AVFormat C header file.
      */
-    private const string HEADER_FILE_PATH = __DIR__ . "/libav/include/avformat.h";
+    private const string HEADER_FILE_PATH = __DIR__ . "/../ffmpeg/include/avformat.h";
 
     /**
      * Initializes the AVFormat library.
@@ -128,6 +128,8 @@ EOT,
 
         if ($os === 'Windows') {
             $candidates = [
+                'avformat-10.dll',
+                'avformat-9.dll',
                 'avformat-8.dll',
                 'avformat-7.dll',
                 'avformat.dll',

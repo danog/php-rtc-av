@@ -51,5 +51,16 @@
       "Tests\\Webrtc\\AVCodec\\": "tests"
     }
   },
+  "scripts": {
+    "post-install-cmd": [
+      "@setup-ffmpeg"
+    ],
+    "post-update-cmd": [
+      "@setup-ffmpeg"
+    ],
+    "setup-ffmpeg": [
+      "php scripts/ffmpeg-downloader.php"
+    ]
+  },
   "minimum-stability": "dev"
 }

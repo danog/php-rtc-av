@@ -31,7 +31,7 @@ class AVFilter
     /**
      * The path to the AVFilter C header file.
      */
-    private const string HEADER_FILE_PATH = __DIR__ . "/libav/include/avfilter.h";
+    private const string HEADER_FILE_PATH = __DIR__ . "/../ffmpeg/include/avfilter.h";
 
     /**
      * Initializes the AVFilter library.
@@ -132,6 +132,8 @@ EOT,
 
         if ($os === 'Windows') {
             $candidates = [
+                'avfilter-10.dll',
+                'avfilter-9.dll',
                 'avfilter-8.dll',
                 'avfilter-7.dll',
                 'avfilter.dll',

@@ -26,7 +26,7 @@ class SWScale
     /**
      * The path to the SWScale C header file.
      */
-    private const string HEADER_FILE_PATH = __DIR__ . "/libav/include/swscale.h";
+    private const string HEADER_FILE_PATH = __DIR__ . "/../ffmpeg/include/swscale.h";
 
     /**
      * Initializes the SWScale library.
@@ -105,6 +105,8 @@ EOT,
 
         if ($os === 'Windows') {
             $candidates = [
+                'swscale-10.dll',
+                'swscale-9.dll',
                 'swscale-8.dll',
                 'swscale-7.dll',
                 'swscale.dll',
