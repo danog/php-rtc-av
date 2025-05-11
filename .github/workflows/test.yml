@@ -77,13 +77,27 @@ jobs:
           sudo make install
           ffmpeg -version
 
-      - name: Install FFmpeg 7.1.1 on Windows (prebuilt)
+      - name: Install FFmpeg 7.1.1 on Windows (custom build)
         if: matrix.os == 'windows-latest'
+        shell: powershell
         run: |
-          Invoke-WebRequest -Uri https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-7.1.1-full_build.zip -OutFile ffmpeg.zip
-          Expand-Archive ffmpeg.zip -DestinationPath $env:USERPROFILE\ffmpeg
-          $env:Path += ";$env:USERPROFILE\ffmpeg\ffmpeg-7.1.1-full_build\bin"
-          ffmpeg -version
+          Invoke-WebRequest -Uri https://github.com/PHP-WebRTC/ffmpeg-builder/releases/download/v7.1.1/ffmpeg-win_amd64.tar.gz -OutFile ffmpeg.tar.gz
+          mkdir ffmpeg
+          tar -xzf ffmpeg.tar.gz -C ffmpeg
+
+          # Add lib folder containing DLLs to PATH
+          echo "${{ github.workspace }}\ffmpeg\lib" | Out-File -Append $env:GITHUB_PATH
+
+          # Check ffmpeg version from bin if available
+          if (Test-Path "${{ github.workspace }}\ffmpeg\bin\ffmpeg.exe") {
+            & "${{ github.workspace }}\ffmpeg\bin\ffmpeg.exe" -version
+          } elseif (Test-Path "${{ github.workspace }}\ffmpeg\lib\ffmpeg.exe") {
+            & "${{ github.workspace }}\ffmpeg\lib\ffmpeg.exe" -version
+          } else {
+            Write-Host "ffmpeg.exe not found."
+          }
+      
+      
 
       - name: Check PHP and FFI status
         run: |
