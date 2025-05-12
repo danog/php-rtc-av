@@ -54,6 +54,15 @@
   "scripts": {
     "setup-ffmpeg": [
       "php scripts/ffmpeg-downloader.php"
+    ],
+    "pre-install-cmd": [
+      "@check-linux"
+    ],
+    "pre-update-cmd": [
+      "@check-linux"
+    ],
+    "check-linux": [
+      "php -r \"if (stripos(PHP_OS_FAMILY, 'Linux') === false) { fwrite(STDERR, 'This package only supports Linux.' . PHP_EOL); exit(1); }\""
     ]
   },
   "minimum-stability": "dev"
