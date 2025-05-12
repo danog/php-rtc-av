@@ -1,4 +1,4 @@
-name: PHP-AV CI TEST
+name: AV TESTS
 
 on:
   push:
