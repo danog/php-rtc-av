@@ -31,7 +31,7 @@ class AVCodec
     /**
      * The path to the AVCodec C header file.
      */
-    private const string HEADER_FILE_PATH = __DIR__ . "/../ffmpeg/include/avcodec.h";
+    private const string HEADER_FILE_PATH = __DIR__ . "/libav/include/avcodec.h";
 
     /**
      * Initializes the AVCodec library.
@@ -80,7 +80,7 @@ class AVCodec
                 $os = PHP_OS_FAMILY;
                 $installHint = match ($os) {
                     'Windows' => <<<EOT
-Download and install FFmpeg (version 7.1.1) with development files (DLLs) from https://ffmpeg.org/download.html.
+Download and install FFmpeg (version 7.x or higher) with development files (DLLs) from https://ffmpeg.org/download.html.
 Make sure avcodec-*.dll is in your PATH or specify the LIB_AVCODEC_PATH environment variable.
 EOT,
                     'Darwin' => <<<EOT
@@ -88,7 +88,7 @@ Install FFmpeg with development headers on macOS:
 
     brew install ffmpeg
 
-Ensure it is version 7.1.1. You may need to use:
+Ensure it is version 7.x or higher. You may need to use:
 
     brew upgrade ffmpeg
 
@@ -100,58 +100,15 @@ Install FFmpeg development packages on Linux:
 For Debian/Ubuntu:
 
     sudo apt update
-    
-    sudo apt install -y \
-    autoconf automake build-essential cmake git libtool \
-    pkg-config texinfo zlib1g-dev libx264-dev libx265-dev \
-    libvpx-dev libfdk-aac-dev libmp3lame-dev libopus-dev \
-    nasm
-    
-    git clone https://github.com/FFmpeg/FFmpeg.git
-    
-    cd FFmpeg
-    
-    git checkout n7.1.1
-    
-    ./configure --enable-shared --enable-gpl --enable-nonfree \
-    --enable-libx264 --enable-libx265 --enable-libvpx \
-    --enable-libfdk-aac --enable-libmp3lame --enable-libopus
-    
-    make -j$(nproc)
-    
-    sudo make install
-    
-    sudo ldconfig
+    sudo apt install libavcodec-dev
 
 For Fedora/RHEL:
 
-    sudo dnf update -y
+    sudo dnf install ffmpeg-devel
 
-    sudo dnf install -y \
-    autoconf automake cmake git libtool make gcc gcc-c++ \
-    pkgconfig texinfo zlib-devel x264-devel x265-devel \
-    libvpx-devel fdk-aac-devel lame-devel opus-devel \
-    nasm
-    
-    git clone https://github.com/FFmpeg/FFmpeg.git
-    
-    cd FFmpeg
-    
-    git checkout n7.1.1
-    
-    ./configure --enable-shared --enable-gpl --enable-nonfree \
-    --enable-libx264 --enable-libx265 --enable-libvpx \
-    --enable-libfdk-aac --enable-libmp3lame --enable-libopus
-    
-    make -j$(nproc)
-    
-    sudo make install
-    
-    sudo ldconfig
-
-Make sure the installed version is 7.1.1. If your package manager provides an older version, consider building FFmpeg manually from source.
+Make sure the installed version is 7.x or higher. If your package manager provides an older version, consider building FFmpeg manually from source.
 EOT,
-                    default => "Please install FFmpeg (version 7.1.1) and ensure the development libraries (headers and shared libs) are available on your system. See https://ffmpeg.org/download.html for instructions."
+                    default => "Please install FFmpeg (version 7.x or higher) and ensure the development libraries (headers and shared libs) are available on your system. See https://ffmpeg.org/download.html for instructions."
                 };
 
                 throw new AvCodecException(sprintf(
