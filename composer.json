@@ -1,69 +1,72 @@
 {
-  "name": "quasarstream/av",
-  "type": "library",
-  "description": "This PHP library leverages the Foreign Function Interface (FFI) to directly interact with native FFmpeg shared libraries (libavcodec, libavfilter, libavformat, etc.), providing low-level access to powerful multimedia processing capabilities within PHP.",
-  "keywords": [
-    "ffmpeg",
-    "libavcodec",
-    "avcodec",
-    "libavfilter",
-    "avfilter",
-    "libavformat",
-    "avformat",
-    "libswscale",
-    "swscale",
-    "webrtc",
-    "codec"
-  ],
-  "homepage": "https://www.quasarstream.com/webrtc",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Amin Yazdanpanah",
-      "email": "github@aminyazdanpanah.com"
+    "name": "danog/php-rtc-av",
+    "type": "library",
+    "description": "This PHP library leverages the Foreign Function Interface (FFI) to directly interact with native FFmpeg shared libraries (libavcodec, libavfilter, libavformat, etc.), providing low-level access to powerful multimedia processing capabilities within PHP. Fork with FFI made optional and a pure-PHP DTLS/SRTP stack, maintained for MadelineProto.",
+    "keywords": [
+        "ffmpeg",
+        "libavcodec",
+        "avcodec",
+        "libavfilter",
+        "avfilter",
+        "libavformat",
+        "avformat",
+        "libswscale",
+        "swscale",
+        "webrtc",
+        "codec"
+    ],
+    "homepage": "https://www.quasarstream.com/webrtc",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Amin Yazdanpanah",
+            "email": "github@aminyazdanpanah.com"
+        },
+        {
+            "name": "Sana Moniri",
+            "email": "s.mo@quasarstream.com"
+        },
+        {
+            "name": "Quasar Stream Community",
+            "homepage": "https://quasarstream.com/teams"
+        }
+    ],
+    "require": {
+        "php": "^8.4",
+        "ext-ffi": "*",
+        "quasarstream/exception": "^1.0",
+        "quasarstream/mixin": "^1.0"
     },
-    {
-      "name": "Sana Moniri",
-      "email": "s.mo@quasarstream.com"
+    "require-dev": {
+        "phpunit/php-code-coverage": "11.0.x-dev",
+        "phpunit/phpunit": "^11.3"
     },
-    {
-      "name": "Quasar Stream Community",
-      "homepage": "https://quasarstream.com/teams"
+    "autoload": {
+        "psr-4": {
+            "Webrtc\\AVCodec\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Webrtc\\AVCodec\\": "tests"
+        }
+    },
+    "scripts": {
+        "setup-ffmpeg": [
+            "php scripts/ffmpeg-downloader.php"
+        ],
+        "pre-install-cmd": [
+            "@check-linux"
+        ],
+        "pre-update-cmd": [
+            "@check-linux"
+        ],
+        "check-linux": [
+            "php -r \"if (stripos(PHP_OS_FAMILY, 'Linux') === false) { fwrite(STDERR, 'This package only supports Linux.' . PHP_EOL); exit(1); }\""
+        ]
+    },
+    "minimum-stability": "dev",
+    "replace": {
+        "quasarstream/av": "self.version"
     }
-  ],
-  "require": {
-    "php": "^8.4",
-    "ext-ffi": "*",
-    "quasarstream/exception": "^1.0",
-    "quasarstream/mixin": "^1.0"
-  },
-  "require-dev": {
-    "phpunit/php-code-coverage": "11.0.x-dev",
-    "phpunit/phpunit": "^11.3"
-  },
-  "autoload": {
-    "psr-4": {
-      "Webrtc\\AVCodec\\": "src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Tests\\Webrtc\\AVCodec\\": "tests"
-    }
-  },
-  "scripts": {
-    "setup-ffmpeg": [
-      "php scripts/ffmpeg-downloader.php"
-    ],
-    "pre-install-cmd": [
-      "@check-linux"
-    ],
-    "pre-update-cmd": [
-      "@check-linux"
-    ],
-    "check-linux": [
-      "php -r \"if (stripos(PHP_OS_FAMILY, 'Linux') === false) { fwrite(STDERR, 'This package only supports Linux.' . PHP_EOL); exit(1); }\""
-    ]
-  },
-  "minimum-stability": "dev"
 }
