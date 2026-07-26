@@ -13,6 +13,7 @@ namespace Webrtc\AVCodec;
 
 use FFI;
 use FFI\Exception as FFIException;
+use Throwable;
 use Webrtc\AVCodec\Exception\AvCodecException;
 
 /**
@@ -45,6 +46,32 @@ class AVCodec
      *
      * @throws AvCodecException If the AVCodec library cannot be loaded or the version is unsupported.
      */
+    /**
+     * Report whether the FFmpeg stack this package binds against can actually be loaded.
+     *
+     * Transcoding is optional: media that is already encoded is packetized without FFI, so
+     * callers use this to decide whether transcoding is on the table rather than to decide
+     * whether they can proceed at all.
+     *
+     * @return bool True when libavcodec, libavformat and libavfilter all load and match.
+     */
+    public static function isAvailable(): bool
+    {
+        if (!extension_loaded('FFI')) {
+            return false;
+        }
+
+        try {
+            self::init();
+            AVFormat::init();
+            AVFilter::init();
+        } catch (Throwable) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static function init(bool $debug = false): void
     {
         global $libAVCodec;
@@ -52,18 +79,19 @@ class AVCodec
         if (!isset($libAVCodec)) {
             try {
                 $lib = getenv("LIB_AVCODEC_PATH") ?: self::getLibPath();
-                $libAVCodec = FFI::cdef(file_get_contents(self::HEADER_FILE_PATH), $lib);
 
-                // Verify the loaded library version
-                $version = $libAVCodec->av_version_info();
+                // Bind into a local first. A library that fails the check below must not be left
+                // behind in the global, or the next init() call would see it already set, skip the
+                // check and hand out a binding whose struct layouts do not match the loaded ABI.
+                $binding = FFI::cdef(file_get_contents(self::HEADER_FILE_PATH), $lib);
 
-                if ($version < self::SUPPORTED_VERSION) {
-                    throw new AvCodecException(sprintf(
-                        "The library could not be initialized. Required version: %d or higher. Detected version: %d.",
-                        self::SUPPORTED_VERSION,
-                        $version
-                    ));
-                }
+                LibraryVersion::assertSupported(
+                    $binding->av_version_info(),
+                    self::SUPPORTED_VERSION,
+                    "libavcodec"
+                );
+
+                $libAVCodec = $binding;
 
                 self::setDefinition();
 

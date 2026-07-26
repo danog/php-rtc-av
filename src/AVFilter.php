@@ -52,18 +52,18 @@ class AVFilter
         if (!isset($libAVFilter)) {
             try {
                 $lib = getenv("LIB_AVFILTER_PATH") ?: self::getLibPath();
-                $libAVFilter = FFI::cdef(file_get_contents(self::HEADER_FILE_PATH), $lib);
+                // Bind into a local first. A library that fails the check below must not be left
+                // behind in the global, or the next init() call would see it already set, skip the
+                // check and hand out a binding whose struct layouts do not match the loaded ABI.
+                $binding = FFI::cdef(file_get_contents(self::HEADER_FILE_PATH), $lib);
 
-                // Verify the loaded library version
-                $version = $libAVFilter->av_version_info();
+                LibraryVersion::assertSupported(
+                    $binding->av_version_info(),
+                    self::SUPPORTED_VERSION,
+                    "libavfilter"
+                );
 
-                if ($version < self::SUPPORTED_VERSION) {
-                    throw new AvCodecException(sprintf(
-                        "The library could not be initialized. Required version: %d or higher. Detected version: %d.",
-                        self::SUPPORTED_VERSION,
-                        $version
-                    ));
-                }
+                $libAVFilter = $binding;
 
                 if ($debug) {
                     $logCallback = function ($avcl, $level, $fmt, $args) {

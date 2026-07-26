@@ -32,6 +32,12 @@ class CodecTest extends TestCase
 
     protected function setUp(): void
     {
+        if (!AVCodec::isAvailable()) {
+            self::markTestSkipped(
+                'Transcoding needs the FFI extension and an FFmpeg build matching the bundled headers.'
+            );
+        }
+
         parent::setUp();
         AVCodec::init();
     }

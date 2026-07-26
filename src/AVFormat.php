@@ -52,18 +52,18 @@ class AVFormat
         if (!isset($libAVFormat)) {
             try {
                 $lib = getenv("LIB_AVFORMAT_PATH") ?? self::getLibPath();
-                $libAVFormat = FFI::cdef(file_get_contents(self::HEADER_FILE_PATH), $lib);
+                // Bind into a local first. A library that fails the check below must not be left
+                // behind in the global, or the next init() call would see it already set, skip the
+                // check and hand out a binding whose struct layouts do not match the loaded ABI.
+                $binding = FFI::cdef(file_get_contents(self::HEADER_FILE_PATH), $lib);
 
-                // Verify the loaded library version
-                $version = $libAVFormat->av_version_info();
+                LibraryVersion::assertSupported(
+                    $binding->av_version_info(),
+                    self::SUPPORTED_VERSION,
+                    "libavformat"
+                );
 
-                if ($version < self::SUPPORTED_VERSION) {
-                    throw new AvCodecException(sprintf(
-                        "The library could not be initialized. Required version: %d or higher. Detected version: %d.",
-                        self::SUPPORTED_VERSION,
-                        $version
-                    ));
-                }
+                $libAVFormat = $binding;
 
                 if (!$debug) {
                     $libAVFormat->av_log_set_level(-8); // Set minimal logging when not debugging
