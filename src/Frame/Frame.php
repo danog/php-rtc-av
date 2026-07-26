@@ -27,7 +27,7 @@ use Webrtc\Mixin\SharedLibraryInterface;
  */
 abstract class Frame implements FrameInterface, SharedLibraryInterface
 {
-    private const float AV_NOPTS_VALUE = -9223372036854775808;
+    private const AV_NOPTS_VALUE = -9223372036854775808;
 
     /**
      * @var FFI|null $libAVCodec FFI instance for AVCodec library

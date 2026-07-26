@@ -31,7 +31,7 @@ use Webrtc\Mixin\SharedLibraryInterface;
 class Dictionary implements SharedLibraryInterface, \Countable, \IteratorAggregate
 {
 
-    private const int IGNORE_SUFFIX = 2;
+    private const IGNORE_SUFFIX = 2;
     private FFI $libAVCodec;
 
     /**

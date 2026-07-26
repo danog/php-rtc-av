@@ -154,7 +154,7 @@ class AudioResamplerTest extends TestCase
 
         $oframe = $oframes[0];
         $this->assertEquals(0, $oframe->getPts());
-        $this->assertEquals(new Fraction(1, 44100)(), $oframe->getTimeBase());
+        $this->assertEquals((new Fraction(1, 44100))(), $oframe->getTimeBase());
         $this->assertEquals(44100, $oframe->getSampleRate());
         $this->assertEquals(925, $oframe->getSamples());
 
@@ -169,7 +169,7 @@ class AudioResamplerTest extends TestCase
 
         $oframe = $oframes[0];
         $this->assertEquals(925, $oframe->getPts());
-        $this->assertEquals(new Fraction(1, 44100)(), $oframe->getTimeBase());
+        $this->assertEquals((new Fraction(1, 44100))(), $oframe->getTimeBase());
         $this->assertEquals(44100, $oframe->getSampleRate());
         $this->assertEquals(941, $oframe->getSamples());
 
@@ -178,7 +178,7 @@ class AudioResamplerTest extends TestCase
 
         $oframe = $oframes[0];
         $this->assertEquals(941 + 925, $oframe->getPts());
-        $this->assertEquals(new Fraction(1, 44100)(), $oframe->getTimeBase());
+        $this->assertEquals((new Fraction(1, 44100))(), $oframe->getTimeBase());
         $this->assertEquals(44100, $oframe->getSampleRate());
         $this->assertEquals(15, $oframe->getSamples());
     }
@@ -197,7 +197,7 @@ class AudioResamplerTest extends TestCase
 
         $oframe = $oframes[0];
         $this->assertEquals(0, $oframe->getPts());
-        $this->assertEquals(new Fraction(1, 48000)(), $oframe->getTimeBase());
+        $this->assertEquals((new Fraction(1, 48000))(), $oframe->getTimeBase());
         $this->assertEquals(48000, $oframe->getSampleRate());
         $this->assertEquals(1098, $oframe->getSamples());
 
@@ -211,7 +211,7 @@ class AudioResamplerTest extends TestCase
 
         $oframe = $oframes[0];
         $this->assertEquals(1098, $oframe->getPts());
-        $this->assertEquals(new Fraction(1, 48000)(), $oframe->getTimeBase());
+        $this->assertEquals((new Fraction(1, 48000))(), $oframe->getTimeBase());
         $this->assertEquals(48000, $oframe->getSampleRate());
         $this->assertEquals(1114, $oframe->getSamples());
 
@@ -220,7 +220,7 @@ class AudioResamplerTest extends TestCase
 
         $oframe = $oframes[0];
         $this->assertEquals(1114 + 1098, $oframe->getPts());
-        $this->assertEquals(new Fraction(1, 48000)(), $oframe->getTimeBase());
+        $this->assertEquals((new Fraction(1, 48000))(), $oframe->getTimeBase());
         $this->assertEquals(48000, $oframe->getSampleRate());
         $this->assertEquals(18, $oframe->getSamples());
     }
@@ -239,7 +239,7 @@ class AudioResamplerTest extends TestCase
 
         $oframe = $oframes[0];
         $this->assertEquals(0, $oframe->getPts());
-        $this->assertEquals(new Fraction(1, 8000)(), $oframe->getTimeBase());
+        $this->assertEquals((new Fraction(1, 8000))(), $oframe->getTimeBase());
         $this->assertEquals(8000, $oframe->getSampleRate());
         $this->assertEquals(1024, $oframe->getSamples());
 
@@ -253,7 +253,7 @@ class AudioResamplerTest extends TestCase
 
         $oframe = $oframes[0];
         $this->assertEquals(65536, $oframe->getPts());
-        $this->assertEquals(new Fraction(1, 8000)(), $oframe->getTimeBase());
+        $this->assertEquals((new Fraction(1, 8000))(), $oframe->getTimeBase());
         $this->assertEquals(8000, $oframe->getSampleRate());
         $this->assertEquals(1024, $oframe->getSamples());
 
@@ -275,7 +275,7 @@ class AudioResamplerTest extends TestCase
 
         $oframe = $oframes[0];
         $this->assertEquals(0, $oframe->getPts());
-        $this->assertEquals(new Fraction(1, 44100)(), $oframe->getTimeBase());
+        $this->assertEquals((new Fraction(1, 44100))(), $oframe->getTimeBase());
         $this->assertEquals(44100, $oframe->getSampleRate());
 
         // flush
@@ -284,7 +284,7 @@ class AudioResamplerTest extends TestCase
 
         $oframe = $oframes[0];
         $this->assertEquals(925, $oframe->getPts());
-        $this->assertEquals(new Fraction(1, 44100)(), $oframe->getTimeBase());
+        $this->assertEquals((new Fraction(1, 44100))(), $oframe->getTimeBase());
         $this->assertEquals(44100, $oframe->getSampleRate());
         $this->assertEquals(16, $oframe->getSamples());
     }

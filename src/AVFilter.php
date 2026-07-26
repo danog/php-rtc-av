@@ -26,12 +26,12 @@ class AVFilter
     /**
      * The minimum supported major version of libavfilter.
      */
-    private const int SUPPORTED_VERSION = 7;
+    private const SUPPORTED_VERSION = 7;
 
     /**
      * The path to the AVFilter C header file.
      */
-    private const string HEADER_FILE_PATH = __DIR__ . "/libav/include/avfilter.h";
+    private const HEADER_FILE_PATH = __DIR__ . "/libav/include/avfilter.h";
 
     /**
      * Initializes the AVFilter library.

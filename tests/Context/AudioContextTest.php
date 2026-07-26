@@ -110,10 +110,10 @@ class AudioContextTest extends TestCase
         foreach ($this->getSampleFrames() as $frame) {
             $resampledFrames = $resampler->resample($frame);
             foreach ($resampledFrames as $resampledFrame) {
-                $this->assertEquals(new Fraction(1, 48000)(), $resampledFrame->getTimeBase());
+                $this->assertEquals((new Fraction(1, 48000))(), $resampledFrame->getTimeBase());
 
                 foreach ($transcoder->encode($resampledFrame) as $packet) {
-                    $this->assertEquals(new Fraction(1, 48000)(), $packet->getTimeBase());
+                    $this->assertEquals((new Fraction(1, 48000))(), $packet->getTimeBase());
                     $packetSizes[] = $packet->getSize();
                     fwrite($file, $packet->getData());
                 }
@@ -121,7 +121,7 @@ class AudioContextTest extends TestCase
         }
 
         foreach ($transcoder->encode(null) as $packet) {
-            $this->assertEquals(new Fraction(1, 48000)(), $packet->getTimeBase());
+            $this->assertEquals((new Fraction(1, 48000))(), $packet->getTimeBase());
             $packetSizes[] = $packet->getSize();
             fwrite($file, $packet->getData());
         }

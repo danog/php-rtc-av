@@ -131,7 +131,7 @@ class VideoFrameTest extends TestCase
         $reformattedFrame = $frame->reformat(320, 240);
 
         $this->assertEquals(123, $reformattedFrame->getPts());
-        $this->assertEquals(new Fraction(456, 1)(), $reformattedFrame->getTimeBase());
+        $this->assertEquals((new Fraction(456, 1))(), $reformattedFrame->getTimeBase());
     }
 
     public function testReformatIdentity()

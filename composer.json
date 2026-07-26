@@ -32,8 +32,7 @@
         }
     ],
     "require": {
-        "php": "^8.4",
-        "ext-ffi": "*",
+        "php": "^8.2",
         "quasarstream/exception": "^1.0",
         "quasarstream/mixin": "^1.0"
     },
@@ -68,5 +67,8 @@
     "minimum-stability": "dev",
     "replace": {
         "quasarstream/av": "self.version"
+    },
+    "suggest": {
+        "ext-ffi": "Install the FFI extension and libavcodec/libavformat/libavfilter to transcode media; not required to mux or packetize already-encoded media"
     }
 }

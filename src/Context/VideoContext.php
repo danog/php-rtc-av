@@ -30,7 +30,7 @@ use Webrtc\Exception\RuntimeException;
  */
 class VideoContext extends Context
 {
-    private const float AV_NOPTS_VALUE = -9223372036854775808;
+    private const AV_NOPTS_VALUE = -9223372036854775808;
     /**
      * @var VideoFormat|null $format Current video format configuration
      */

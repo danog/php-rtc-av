@@ -26,12 +26,12 @@ class AVCodec
     /**
      * The minimum supported major version of libavcodec.
      */
-    private const int SUPPORTED_VERSION = 7;
+    private const SUPPORTED_VERSION = 7;
 
     /**
      * The path to the AVCodec C header file.
      */
-    private const string HEADER_FILE_PATH = __DIR__ . "/libav/include/avcodec.h";
+    private const HEADER_FILE_PATH = __DIR__ . "/libav/include/avcodec.h";
 
     /**
      * Initializes the AVCodec library.

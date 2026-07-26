@@ -26,7 +26,7 @@ class SWScale
     /**
      * The path to the SWScale C header file.
      */
-    private const string HEADER_FILE_PATH = __DIR__ . "/libav/include/swscale.h";
+    private const HEADER_FILE_PATH = __DIR__ . "/libav/include/swscale.h";
 
     /**
      * Initializes the SWScale library.
