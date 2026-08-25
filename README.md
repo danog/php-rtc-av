@@ -1,13 +1,20 @@
 # PHP AV Libraries
 
-[![PHP Version](https://img.shields.io/badge/php-%3E%3D8.4-blue.svg)](https://php.net/)
+[![PHP Version](https://img.shields.io/badge/php-%3E%3D8.2-blue.svg)](https://php.net/)
 [![License](https://img.shields.io/badge/license-BSD-blue.svg)](LICENSE)
 
 PHP AV Libraries provides FFI bindings to AV libraries (including AVCodec and AVFilter) for encoding, transcoding, and manipulating audio/video streams.
 
+## About this fork
+
+This is the `danog/php-rtc-av` fork used by MadelineProto. It targets PHP 8.2+, loads FFI only when transcoding is requested, and rejects FFmpeg libraries whose ABI does not match the bundled FFmpeg 7 headers. Already-encoded media can be packetized without FFI.
+
+The forked stack keeps the upstream `quasarstream/*` dependency constraints for compatibility. Each `danog/php-rtc-*` package replaces its upstream counterpart, so consumers select the complete maintained stack by requiring the corresponding danog packages together.
+
 ## Requirements
 
-- PHP ≥ 8.4 with FFI extension enabled
+- PHP ≥ 8.2
+- FFI and matching FFmpeg 7 shared libraries only when encoding, decoding, or transcoding media
 - Linux (Windows and macOS support planned for future releases)
 - FFmpeg/libav shared libraries (libavcodec, libavfilter, etc.)
   - Compatible with FFmpeg version 7.1.1

@@ -1,7 +1,7 @@
 {
     "name": "danog/php-rtc-av",
     "type": "library",
-    "description": "This PHP library leverages the Foreign Function Interface (FFI) to directly interact with native FFmpeg shared libraries (libavcodec, libavfilter, libavformat, etc.), providing low-level access to powerful multimedia processing capabilities within PHP. Fork with FFI made optional and a pure-PHP DTLS/SRTP stack, maintained for MadelineProto.",
+    "description": "FFmpeg/libav FFI bindings for PHP media processing. MadelineProto's PHP 8.2+ fork uses lazy, optional FFI, strict ABI checks, and the modular danog/php-rtc stack.",
     "keywords": [
         "ffmpeg",
         "libavcodec",
