@@ -33,8 +33,8 @@
     ],
     "require": {
         "php": "^8.2",
-        "quasarstream/exception": "^1.0",
-        "quasarstream/mixin": "^1.0"
+        "danog/php-rtc-exception": "^1.0",
+        "danog/php-rtc-mixin": "^1.0"
     },
     "require-dev": {
         "phpunit/php-code-coverage": "11.0.x-dev",
@@ -65,9 +65,6 @@
         ]
     },
     "minimum-stability": "dev",
-    "replace": {
-        "quasarstream/av": "self.version"
-    },
     "suggest": {
         "ext-ffi": "Install the FFI extension and libavcodec/libavformat/libavfilter to transcode media; not required to mux or packetize already-encoded media"
     }

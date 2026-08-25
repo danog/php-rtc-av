@@ -9,7 +9,7 @@ PHP AV Libraries provides FFI bindings to AV libraries (including AVCodec and AV
 
 This is the `danog/php-rtc-av` fork used by MadelineProto. It targets PHP 8.2+, loads FFI only when transcoding is requested, and rejects FFmpeg libraries whose ABI does not match the bundled FFmpeg 7 headers. Already-encoded media can be packetized without FFI.
 
-The forked stack keeps the upstream `quasarstream/*` dependency constraints for compatibility. Each `danog/php-rtc-*` package replaces its upstream counterpart, so consumers select the complete maintained stack by requiring the corresponding danog packages together.
+All internal Composer dependencies use their `danog/php-rtc-*` package names directly, so installing a component selects the maintained danog packages throughout the dependency graph.
 
 ## Requirements
 
