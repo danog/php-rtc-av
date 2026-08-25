@@ -12,6 +12,7 @@
 namespace Webrtc\AVCodec;
 
 use FFI;
+use FFI\CData;
 use stdClass;
 use Webrtc\AVCodec\Format\AudioFormat;
 use Webrtc\AVCodec\Format\VideoFormat;
@@ -222,15 +223,16 @@ class Codec implements SharedLibraryInterface
      */
     public function getVideoFormats(): ?array
     {
-        if ($this->codec->pix_fmts === null) {
+        $config = $this->getSupportedConfig($this->libAVCodec->AV_CODEC_CONFIG_PIX_FORMAT);
+        if ($config === null) {
             return null;
         }
 
+        [$values, $count] = $config;
+        $formats = $this->libAVCodec->cast('const enum AVPixelFormat *', $values);
         $ret = [];
-        $i = 0;
-        while ($this->codec->pix_fmts[$i] !== -1) {
-            $ret[] = new VideoFormat($this->codec->pix_fmts[$i], 0, 0);
-            $i++;
+        for ($i = 0; $i < $count; $i++) {
+            $ret[] = new VideoFormat($formats[$i], 0, 0);
         }
 
         return $ret;
@@ -243,19 +245,19 @@ class Codec implements SharedLibraryInterface
      */
     public function getFrameRates(): ?array
     {
-        if ($this->codec->supported_framerates === null) {
+        $config = $this->getSupportedConfig($this->libAVCodec->AV_CODEC_CONFIG_FRAME_RATE);
+        if ($config === null) {
             return null;
         }
 
+        [$values, $count] = $config;
+        $rates = $this->libAVCodec->cast('const AVRational *', $values);
         $ret = [];
-        $i = 0;
-        while ($this->codec->supported_framerates[$i]->denum !== 0) {
-            $frameRate = FFI::addr($this->codec->supported_framerates[$i]);
+        for ($i = 0; $i < $count; $i++) {
             $frameRateObj = new StdClass();
-            $frameRateObj->num = $frameRate->num;
-            $frameRateObj->den = $frameRate->den;
+            $frameRateObj->num = $rates[$i]->num;
+            $frameRateObj->den = $rates[$i]->den;
             $ret[] = $frameRateObj;
-            $i++;
         }
 
         return $ret;
@@ -268,15 +270,16 @@ class Codec implements SharedLibraryInterface
      */
     public function getAudioFormats(): ?array
     {
-        if ($this->codec->sample_fmts === null) {
+        $config = $this->getSupportedConfig($this->libAVCodec->AV_CODEC_CONFIG_SAMPLE_FORMAT);
+        if ($config === null) {
             return null;
         }
 
+        [$values, $count] = $config;
+        $formats = $this->libAVCodec->cast('const enum AVSampleFormat *', $values);
         $ret = [];
-        $i = 0;
-        while ($this->codec->sample_fmts[$i] !== -1) {
-            $ret[] = new AudioFormat($this->codec->sample_fmts[$i]);
-            $i++;
+        for ($i = 0; $i < $count; $i++) {
+            $ret[] = new AudioFormat($formats[$i]);
         }
 
         return $ret;
@@ -289,18 +292,42 @@ class Codec implements SharedLibraryInterface
      */
     public function getAudioRates(): ?array
     {
-        if ($this->codec->supported_samplerates === null) {
+        $config = $this->getSupportedConfig($this->libAVCodec->AV_CODEC_CONFIG_SAMPLE_RATE);
+        if ($config === null) {
             return null;
         }
 
+        [$values, $count] = $config;
+        $rates = $this->libAVCodec->cast('const int *', $values);
         $ret = [];
-        $i = 0;
-        while ($this->codec->supported_samplerates[$i] !== 0) {
-            $ret[] = $this->codec->supported_samplerates[$i];
-            $i++;
+        for ($i = 0; $i < $count; $i++) {
+            $ret[] = $rates[$i];
         }
 
         return $ret;
+    }
+
+    /**
+     * @return array{CData, int}|null
+     */
+    private function getSupportedConfig(int $type): ?array
+    {
+        $values = $this->libAVCodec->new('const void *[1]');
+        $count = $this->libAVCodec->new('int[1]');
+        $result = $this->libAVCodec->avcodec_get_supported_config(
+            null,
+            $this->codec,
+            $type,
+            0,
+            $values,
+            $count
+        );
+
+        if ($result < 0 || FFI::isNull($values[0])) {
+            return null;
+        }
+
+        return [$values[0], $count[0]];
     }
 
     public static function getCodecNames(): array

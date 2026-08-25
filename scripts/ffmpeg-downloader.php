@@ -205,7 +205,7 @@ function deleteDirectory(string $dir): bool {
 
 try {
     $baseUrl = "https://github.com/PHP-WebRTC/ffmpeg-builder/releases/download";
-    $ffmpegVersion = "v7.1.1";
+    $ffmpegVersion = "v9.0.1";
     $platform = detectPlatform();
     $fileName = "ffmpeg-$platform.tar.gz";
     $url = "$baseUrl/$ffmpegVersion/$fileName";

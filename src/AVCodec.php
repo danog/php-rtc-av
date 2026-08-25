@@ -27,7 +27,7 @@ class AVCodec
     /**
      * The minimum supported major version of libavcodec.
      */
-    private const SUPPORTED_VERSION = 7;
+    private const SUPPORTED_VERSION = 9;
 
     /**
      * The path to the AVCodec C header file.
@@ -108,7 +108,7 @@ class AVCodec
                 $os = PHP_OS_FAMILY;
                 $installHint = match ($os) {
                     'Windows' => <<<EOT
-Download and install FFmpeg (version 7.x or higher) with development files (DLLs) from https://ffmpeg.org/download.html.
+Download and install FFmpeg 9 with development files (DLLs) from https://ffmpeg.org/download.html.
 Make sure avcodec-*.dll is in your PATH or specify the LIB_AVCODEC_PATH environment variable.
 EOT,
                     'Darwin' => <<<EOT
@@ -116,7 +116,7 @@ Install FFmpeg with development headers on macOS:
 
     brew install ffmpeg
 
-Ensure it is version 7.x or higher. You may need to use:
+Ensure it is version 9.x. You may need to use:
 
     brew upgrade ffmpeg
 
@@ -134,9 +134,9 @@ For Fedora/RHEL:
 
     sudo dnf install ffmpeg-devel
 
-Make sure the installed version is 7.x or higher. If your package manager provides an older version, consider building FFmpeg manually from source.
+Make sure the installed version is 9.x. If your package manager provides an older version, consider building FFmpeg manually from source.
 EOT,
-                    default => "Please install FFmpeg (version 7.x or higher) and ensure the development libraries (headers and shared libs) are available on your system. See https://ffmpeg.org/download.html for instructions."
+                    default => "Please install FFmpeg 9 and ensure the development libraries (headers and shared libs) are available on your system. See https://ffmpeg.org/download.html for instructions."
                 };
 
                 throw new AvCodecException(sprintf(
@@ -192,8 +192,7 @@ EOT,
 
         if ($os === 'Windows') {
             $candidates = [
-                'avcodec-61.dll',
-                'avcodec-60.dll',
+                'avcodec-63.dll',
                 'avcodec.dll',
             ];
         } elseif ($os === 'Darwin') { // macOS

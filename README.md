@@ -7,17 +7,17 @@ PHP AV Libraries provides FFI bindings to AV libraries (including AVCodec and AV
 
 ## About this fork
 
-This is the `danog/php-rtc-av` fork used by MadelineProto. It targets PHP 8.2+, loads FFI only when transcoding is requested, and rejects FFmpeg libraries whose ABI does not match the bundled FFmpeg 7 headers. Already-encoded media can be packetized without FFI.
+This is the `danog/php-rtc-av` fork used by MadelineProto. It targets PHP 8.2+, loads FFI only when transcoding is requested, and rejects FFmpeg libraries whose ABI does not match the bundled FFmpeg 9 headers. Already-encoded media can be packetized without FFI.
 
 All internal Composer dependencies use their `danog/php-rtc-*` package names directly, so installing a component selects the maintained danog packages throughout the dependency graph.
 
 ## Requirements
 
 - PHP ≥ 8.2
-- FFI and matching FFmpeg 7 shared libraries only when encoding, decoding, or transcoding media
+- FFI and matching FFmpeg 9 shared libraries only when encoding, decoding, or transcoding media
 - Linux (Windows and macOS support planned for future releases)
 - FFmpeg/libav shared libraries (libavcodec, libavfilter, etc.)
-  - Compatible with FFmpeg version 7.1.1
+  - Compatible with FFmpeg version 9.x
 
 ## Documentation
 

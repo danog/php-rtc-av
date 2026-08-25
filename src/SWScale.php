@@ -105,8 +105,7 @@ EOT,
 
         if ($os === 'Windows') {
             $candidates = [
-                'swscale-8.dll',
-                'swscale-7.dll',
+                'swscale-10.dll',
                 'swscale.dll',
             ];
         } elseif ($os === 'Darwin') { // macOS

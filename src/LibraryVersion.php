@@ -26,7 +26,7 @@ final class LibraryVersion
     /**
      * Extract the major version from what av_version_info() reports.
      *
-     * FFmpeg reports either a release ("n7.1.1", "7.1.1") or a git description
+     * FFmpeg reports either a release ("n9.0.1", "9.0.1") or a git description
      * ("N-109103-g1c0b0f2b1a"), the latter carrying no usable version number.
      *
      * @param string $info The value returned by av_version_info().

@@ -185,6 +185,12 @@ enum AVChromaLocation {
     AVCHROMA_LOC_NB
 };
 
+enum AVAlphaMode {
+    AVALPHA_MODE_UNSPECIFIED = 0,
+    AVALPHA_MODE_STRAIGHT,
+    AVALPHA_MODE_PREMULTIPLIED,
+};
+
 enum AVChannelOrder {
     AV_CHANNEL_ORDER_UNSPEC,
     AV_CHANNEL_ORDER_NATIVE,
@@ -1165,9 +1171,6 @@ typedef struct AVFrame {
     int width, height;
     int nb_samples;
     int format;
-#if FF_API_FRAME_KEY
-    int key_frame;
-#endif
     enum AVPictureType pict_type;
     AVRational sample_aspect_ratio;
     int64_t pts;
@@ -1176,13 +1179,6 @@ typedef struct AVFrame {
     int quality;
     void *opaque;
     int repeat_pict;
-#if FF_API_INTERLACED_FRAME
-    int interlaced_frame;
-    int top_field_first;
-#endif
-#if FF_API_PALETTE_HAS_CHANGED
-    int palette_has_changed;
-#endif
     int sample_rate;
     AVBufferRef *buf[8];
     AVBufferRef **extended_buf;
@@ -1201,27 +1197,22 @@ typedef struct AVFrame {
     int colorspace;
     enum AVChromaLocation chroma_location;
     int64_t best_effort_timestamp;
-#if FF_API_FRAME_PKT
-    int64_t pkt_pos;
-#endif
     AVDictionary *metadata;
     int decode_error_flags;
 #define FF_DECODE_ERROR_INVALID_BITSTREAM   1
 #define FF_DECODE_ERROR_MISSING_REFERENCE   2
 #define FF_DECODE_ERROR_CONCEALMENT_ACTIVE  4
 #define FF_DECODE_ERROR_DECODE_SLICES       8
-#if FF_API_FRAME_PKT
-    int pkt_size;
-#endif
     AVBufferRef *hw_frames_ctx;
     AVBufferRef *opaque_ref;
     size_t crop_top;
     size_t crop_bottom;
     size_t crop_left;
     size_t crop_right;
-    AVBufferRef *private_ref;
+    void *private_ref;
     AVChannelLayout ch_layout;
     int64_t duration;
+    enum AVAlphaMode alpha_mode;
 } AVFrame;
 
 typedef struct AVClass {
@@ -1250,15 +1241,21 @@ typedef struct AVCodec {
     enum AVCodecID id;
     int capabilities;
     uint8_t max_lowres;
-    const AVRational *supported_framerates;
-    const enum AVPixelFormat *pix_fmts;
-    const int *supported_samplerates;
-    const enum AVSampleFormat *sample_fmts;
     const AVClass *priv_class;
     const AVProfile *profiles;
     const char *wrapper_name;
-    const AVChannelLayout *ch_layouts;
 } AVCodec;
+
+enum AVCodecConfig {
+    AV_CODEC_CONFIG_PIX_FORMAT,
+    AV_CODEC_CONFIG_FRAME_RATE,
+    AV_CODEC_CONFIG_SAMPLE_RATE,
+    AV_CODEC_CONFIG_SAMPLE_FORMAT,
+    AV_CODEC_CONFIG_CHANNEL_LAYOUT,
+    AV_CODEC_CONFIG_COLOR_RANGE,
+    AV_CODEC_CONFIG_COLOR_SPACE,
+    AV_CODEC_CONFIG_ALPHA_MODE,
+};
 
 typedef struct RcOverride{
     int start_frame;
@@ -1285,7 +1282,6 @@ typedef struct AVCodecContext {
     AVRational time_base;
     AVRational pkt_timebase;
     AVRational framerate;
-    int ticks_per_frame;
     int delay;
     int width, height;
     int coded_width, coded_height;
@@ -1688,6 +1684,7 @@ int av_channel_name(char *buf, size_t buf_size, enum AVChannel channel);
 int av_channel_description(char *buf, size_t buf_size, enum AVChannel channel);
 const char *av_get_media_type_string(enum AVMediaType media_type);
 const AVCodec *av_codec_iterate(void **opaque);
+int avcodec_get_supported_config(const AVCodecContext *avctx, const AVCodec *codec, enum AVCodecConfig config, unsigned flags, const void **out_configs, int *out_num_configs);
 void *av_realloc(void *ptr, size_t size);
 const AVCodec *avcodec_find_encoder(enum AVCodecID id);
 void av_log(void* avcl, int level, const char *fmt, ...);

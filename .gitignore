@@ -3,4 +3,4 @@
 /vendor
 /.idea
 composer.lock
-.gitignore
+.gitignorevendor

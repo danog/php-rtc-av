@@ -26,7 +26,7 @@ class AVFormat
     /**
      * The minimum supported major version of libavformat.
      */
-    private const SUPPORTED_VERSION = 7;
+    private const SUPPORTED_VERSION = 9;
 
     /**
      * The path to the AVFormat C header file.
@@ -51,7 +51,7 @@ class AVFormat
 
         if (!isset($libAVFormat)) {
             try {
-                $lib = getenv("LIB_AVFORMAT_PATH") ?? self::getLibPath();
+                $lib = getenv("LIB_AVFORMAT_PATH") ?: self::getLibPath();
                 // Bind into a local first. A library that fails the check below must not be left
                 // behind in the global, or the next init() call would see it already set, skip the
                 // check and hand out a binding whose struct layouts do not match the loaded ABI.
@@ -73,7 +73,7 @@ class AVFormat
                 $os = PHP_OS_FAMILY;
                 $installHint = match ($os) {
                     'Windows' => <<<EOT
-Download and install FFmpeg (version 7.x or higher) with development files (DLLs) from https://ffmpeg.org/download.html.
+Download and install FFmpeg 9 with development files (DLLs) from https://ffmpeg.org/download.html.
 Ensure avformat-*.dll is accessible in your PATH or specify LIB_AVFORMAT_PATH environment variable.
 EOT,
                     'Darwin' => <<<EOT
@@ -81,7 +81,7 @@ Install FFmpeg with development headers on macOS:
 
     brew install ffmpeg
 
-Ensure it is version 7.x or higher. Upgrade if necessary:
+Ensure it is version 9.x. Upgrade if necessary:
 
     brew upgrade ffmpeg
 EOT,
@@ -97,9 +97,9 @@ For Fedora/RHEL:
 
     sudo dnf install ffmpeg-devel
 
-Ensure the installed version is 7.x or higher. If needed, compile FFmpeg manually.
+Ensure the installed version is 9.x. If needed, compile FFmpeg manually.
 EOT,
-                    default => "Please install FFmpeg (version 7.x or higher) and ensure development libraries are available. Visit https://ffmpeg.org/download.html for instructions."
+                    default => "Please install FFmpeg 9 and ensure development libraries are available. Visit https://ffmpeg.org/download.html for instructions."
                 };
 
                 throw new AvCodecException(sprintf(
@@ -128,8 +128,7 @@ EOT,
 
         if ($os === 'Windows') {
             $candidates = [
-                'avformat-8.dll',
-                'avformat-7.dll',
+                'avformat-63.dll',
                 'avformat.dll',
             ];
         } elseif ($os === 'Darwin') { // macOS

@@ -26,7 +26,7 @@ class AVFilter
     /**
      * The minimum supported major version of libavfilter.
      */
-    private const SUPPORTED_VERSION = 7;
+    private const SUPPORTED_VERSION = 9;
 
     /**
      * The path to the AVFilter C header file.
@@ -77,7 +77,7 @@ class AVFilter
                 $os = PHP_OS_FAMILY;
                 $installHint = match ($os) {
                     'Windows' => <<<EOT
-Download and install FFmpeg (version 7.x or higher) with development files (DLLs) from https://ffmpeg.org/download.html.
+Download and install FFmpeg 9 with development files (DLLs) from https://ffmpeg.org/download.html.
 Make sure avfilter-*.dll is in your PATH or specify the correct LIB_AVFILTER_PATH environment variable.
 EOT,
                     'Darwin' => <<<EOT
@@ -85,7 +85,7 @@ Install FFmpeg with development headers on macOS:
 
     brew install ffmpeg
 
-Ensure it is version 7.x or higher. You may need to run:
+Ensure it is version 9.x. You may need to run:
 
     brew upgrade ffmpeg
 EOT,
@@ -101,9 +101,9 @@ For Fedora/RHEL:
 
     sudo dnf install ffmpeg-devel
 
-Ensure the installed version is 7.x or higher. If needed, build FFmpeg manually from source.
+Ensure the installed version is 9.x. If needed, build FFmpeg manually from source.
 EOT,
-                    default => "Please install FFmpeg (version 7.x or higher) and ensure development libraries are available. See https://ffmpeg.org/download.html for instructions."
+                    default => "Please install FFmpeg 9 and ensure development libraries are available. See https://ffmpeg.org/download.html for instructions."
                 };
 
                 throw new AvCodecException(sprintf(
@@ -132,8 +132,7 @@ EOT,
 
         if ($os === 'Windows') {
             $candidates = [
-                'avfilter-8.dll',
-                'avfilter-7.dll',
+                'avfilter-12.dll',
                 'avfilter.dll',
             ];
         } elseif ($os === 'Darwin') { // macOS
