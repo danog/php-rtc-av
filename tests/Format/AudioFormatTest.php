@@ -6,10 +6,14 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use Webrtc\AVCodec\AVCodec;
 use Webrtc\AVCodec\Format\AudioFormat;
+use Webrtc\AVCodec\LibraryVersion;
 use PHPUnit\Framework\TestCase;
 
 #[UsesClass(AVCodec::class)]
+#[UsesClass(LibraryVersion::class)]
 #[CoversClass(AudioFormat::class)]
+#[UsesClass(\Webrtc\AVCodec\AVFilter::class)]
+#[UsesClass(\Webrtc\AVCodec\AVFormat::class)]
 class AudioFormatTest extends TestCase
 {
     protected function setUp(): void

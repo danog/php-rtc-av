@@ -12,6 +12,7 @@ use Webrtc\AVCodec\Format\VideoFormat;
 use PHPUnit\Framework\TestCase;
 use Webrtc\AVCodec\Format\VideoFormatComponent;
 use Webrtc\AVCodec\Frame\AudioFrame;
+use Webrtc\AVCodec\LibraryVersion;
 use Webrtc\Exception\InvalidArgumentException;
 
 #[UsesClass(AVCodec::class)]
@@ -20,7 +21,10 @@ use Webrtc\Exception\InvalidArgumentException;
 #[UsesClass(AudioFrame::class)]
 #[UsesClass(Context::class)]
 #[UsesClass(Dictionary::class)]
+#[UsesClass(LibraryVersion::class)]
 #[CoversClass(VideoFormat::class)]
+#[UsesClass(\Webrtc\AVCodec\AVFilter::class)]
+#[UsesClass(\Webrtc\AVCodec\AVFormat::class)]
 class VideoFormatTest extends TestCase
 {
     protected function setUp(): void

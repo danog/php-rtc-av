@@ -22,6 +22,7 @@ use Webrtc\AVCodec\Filter\Graph;
 use Webrtc\AVCodec\Format\AudioFormat;
 use Webrtc\AVCodec\Frame\AudioFrame;
 use Webrtc\AVCodec\Frame\Frame;
+use Webrtc\AVCodec\LibraryVersion;
 use Webrtc\AVCodec\TransCoder;
 use Webrtc\Exception\InvalidArgumentException;
 use Webrtc\Exception\RuntimeException;
@@ -41,6 +42,7 @@ use Webrtc\Exception\RuntimeException;
 #[UsesClass(AudioFormat::class)]
 #[UsesClass(AudioFrame::class)]
 #[UsesClass(Frame::class)]
+#[UsesClass(LibraryVersion::class)]
 #[UsesClass(TransCoder::class)]
 #[UsesClass(AVCodec::class)]
 #[CoversClass(AudioContext::class)]
@@ -156,9 +158,16 @@ class AudioContextTest extends TestCase
 
         foreach ($packetSizes as $size) {
             $packet = new Packet();
-            $readSize = fread($handle, $size);
+            $readSize = '';
+            while (strlen($readSize) < $size) {
+                $chunk = fread($handle, $size - strlen($readSize));
+                if ($chunk === false || $chunk === '') {
+                    break;
+                }
+                $readSize .= $chunk;
+            }
 
-            if ($readSize === false || strlen($readSize) !== $size) {
+            if (strlen($readSize) !== $size) {
                 throw new RuntimeException("Failed to read expected packet size");
             }
             $packet->putData($readSize);

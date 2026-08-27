@@ -17,6 +17,7 @@ use Webrtc\AVCodec\Format\VideoFormatComponent;
 use Webrtc\AVCodec\Frame\VideoFrame;
 use PHPUnit\Framework\TestCase;
 use Webrtc\AVCodec\Frame\VideoFrameReformater;
+use Webrtc\AVCodec\LibraryVersion;
 use Webrtc\AVCodec\SWScale;
 
 #[UsesClass(AVCodec::class)]
@@ -30,7 +31,10 @@ use Webrtc\AVCodec\SWScale;
 #[UsesClass(VideoPlane::class)]
 #[UsesClass(Context::class)]
 #[UsesClass(Dictionary::class)]
+#[UsesClass(LibraryVersion::class)]
 #[CoversClass(VideoFrame::class)]
+#[UsesClass(\Webrtc\AVCodec\AVFilter::class)]
+#[UsesClass(\Webrtc\AVCodec\AVFormat::class)]
 class VideoFrameTest extends TestCase
 {
     protected function setUp(): void

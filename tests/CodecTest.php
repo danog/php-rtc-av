@@ -15,6 +15,7 @@ use Webrtc\AVCodec\Format\VideoFormatComponent;
 use Webrtc\AVCodec\Frame\AudioFrame;
 use Webrtc\AVCodec\Frame\Frame;
 use Webrtc\AVCodec\Frame\VideoFrame;
+use Webrtc\AVCodec\LibraryVersion;
 use Webrtc\Exception\InvalidArgumentException;
 
 #[UsesClass(AVCodec::class)]
@@ -26,7 +27,10 @@ use Webrtc\Exception\InvalidArgumentException;
 #[UsesClass(Frame::class)]
 #[UsesClass(AudioFrame::class)]
 #[UsesClass(VideoFrame::class)]
+#[UsesClass(LibraryVersion::class)]
 #[CoversClass(Codec::class)]
+#[UsesClass(\Webrtc\AVCodec\AVFilter::class)]
+#[UsesClass(\Webrtc\AVCodec\AVFormat::class)]
 class CodecTest extends TestCase
 {
 

@@ -20,10 +20,12 @@ use Webrtc\AVCodec\Format\VideoFormatComponent;
 use Webrtc\AVCodec\Frame\AudioFrame;
 use Webrtc\AVCodec\Frame\Frame;
 use Webrtc\AVCodec\Frame\VideoFrame;
+use Webrtc\AVCodec\LibraryVersion;
 use Webrtc\AVCodec\SWScale;
 
 #[UsesClass(AVCodec::class)]
 #[UsesClass(AVFilter::class)]
+#[UsesClass(LibraryVersion::class)]
 #[UsesClass(AudioLayout::class)]
 #[UsesClass(Dictionary::class)]
 #[UsesClass(FilterContext::class)]
@@ -38,6 +40,7 @@ use Webrtc\AVCodec\SWScale;
 #[UsesClass(VideoFrame::class)]
 #[UsesClass(SWScale::class)]
 #[CoversClass(Filter::class)]
+#[UsesClass(\Webrtc\AVCodec\AVFormat::class)]
 class FilterTest extends TestCase
 {
     protected function setUp(): void

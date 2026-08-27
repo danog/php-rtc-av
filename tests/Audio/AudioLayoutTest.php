@@ -13,6 +13,9 @@ use Webrtc\AVCodec\AVCodec;
 #[UsesClass(AVCodec::class)]
 #[UsesClass(AudioChannel::class)]
 #[CoversClass(AudioLayout::class)]
+#[UsesClass(\Webrtc\AVCodec\AVFilter::class)]
+#[UsesClass(\Webrtc\AVCodec\AVFormat::class)]
+#[UsesClass(\Webrtc\AVCodec\LibraryVersion::class)]
 class AudioLayoutTest extends TestCase
 {
     protected function setUp(): void

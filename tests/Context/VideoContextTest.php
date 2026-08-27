@@ -23,6 +23,7 @@ use Webrtc\AVCodec\Frame\AudioFrame;
 use Webrtc\AVCodec\Frame\Frame;
 use Webrtc\AVCodec\Frame\VideoFrame;
 use Webrtc\AVCodec\Frame\VideoFrameReformater;
+use Webrtc\AVCodec\LibraryVersion;
 use Webrtc\AVCodec\SWScale;
 use Webrtc\AVCodec\TransCoder;
 use Webrtc\Exception\InvalidArgumentException;
@@ -42,10 +43,12 @@ use Webrtc\Exception\RuntimeException;
 #[UsesClass(AudioFrame::class)]
 #[UsesClass(VideoFrame::class)]
 #[UsesClass(VideoFrameReformater::class)]
+#[UsesClass(LibraryVersion::class)]
 #[UsesClass(SWScale::class)]
 #[UsesClass(TransCoder::class)]
 #[UsesClass(Graph::class)]
 #[CoversClass(VideoContext::class)]
+#[UsesClass(\Webrtc\AVCodec\AVFilter::class)]
 class VideoContextTest extends TestCase
 {
     protected function setUp(): void
@@ -288,9 +291,16 @@ class VideoContextTest extends TestCase
 
         foreach ($packetSizes as $size) {
             $packet = new Packet();
-            $readSize = fread($handle, $size);
+            $readSize = '';
+            while (strlen($readSize) < $size) {
+                $chunk = fread($handle, $size - strlen($readSize));
+                if ($chunk === false || $chunk === '') {
+                    break;
+                }
+                $readSize .= $chunk;
+            }
 
-            if ($readSize === false || strlen($readSize) !== $size) {
+            if (strlen($readSize) !== $size) {
                 throw new RuntimeException("Failed to read expected packet size");
             }
             $packet->putData($readSize);

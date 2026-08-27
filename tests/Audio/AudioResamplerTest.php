@@ -20,10 +20,12 @@ use Webrtc\AVCodec\Format\AudioFormat;
 use Webrtc\AVCodec\Frame\AudioFrame;
 use Webrtc\AVCodec\Frame\Frame;
 use Webrtc\AVCodec\Frame\VideoFrame;
+use Webrtc\AVCodec\LibraryVersion;
 use Webrtc\Exception\InvalidArgumentException;
 
 #[UsesClass(AVCodec::class)]
 #[UsesClass(AVFilter::class)]
+#[UsesClass(LibraryVersion::class)]
 #[UsesClass(AudioLayout::class)]
 #[UsesClass(Dictionary::class)]
 #[UsesClass(Filter::class)]
@@ -36,6 +38,7 @@ use Webrtc\Exception\InvalidArgumentException;
 #[UsesClass(Context::class)]
 #[UsesClass(VideoFrame::class)]
 #[CoversClass(AudioResampler::class)]
+#[UsesClass(\Webrtc\AVCodec\AVFormat::class)]
 class AudioResamplerTest extends TestCase
 {
     protected function setUp(): void

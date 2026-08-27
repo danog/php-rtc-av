@@ -10,6 +10,7 @@ use Webrtc\AVCodec\Data\AudioPlane;
 use Webrtc\AVCodec\Data\Buffer;
 use Webrtc\AVCodec\Format\AudioFormat;
 use Webrtc\AVCodec\Frame\AudioFrame;
+use Webrtc\AVCodec\LibraryVersion;
 use PHPUnit\Framework\TestCase;
 
 #[UsesClass(AVCodec::class)]
@@ -17,7 +18,10 @@ use PHPUnit\Framework\TestCase;
 #[UsesClass(AudioPlane::class)]
 #[UsesClass(AudioFormat::class)]
 #[UsesClass(Buffer::class)]
+#[UsesClass(LibraryVersion::class)]
 #[CoversClass(AudioFrame::class)]
+#[UsesClass(\Webrtc\AVCodec\AVFilter::class)]
+#[UsesClass(\Webrtc\AVCodec\AVFormat::class)]
 class AudioFrameTest extends TestCase
 {
     protected function setUp(): void

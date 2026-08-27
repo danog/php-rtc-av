@@ -9,12 +9,16 @@ use Webrtc\AVCodec\AVCodec;
 use Webrtc\AVCodec\Context\Dictionary;
 use Webrtc\AVCodec\Data\Packet;
 use Webrtc\AVCodec\Frame\AudioFrame;
+use Webrtc\AVCodec\LibraryVersion;
 use Webrtc\Exception\InvalidArgumentException;
 
 #[UsesClass(AVCodec::class)]
 #[UsesClass(AudioFrame::class)]
 #[UsesClass(Packet::class)]
+#[UsesClass(LibraryVersion::class)]
 #[CoversClass(Dictionary::class)]
+#[UsesClass(\Webrtc\AVCodec\AVFilter::class)]
+#[UsesClass(\Webrtc\AVCodec\AVFormat::class)]
 class DictionaryTest extends TestCase
 {
     protected function setUp(): void
