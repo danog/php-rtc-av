@@ -44,7 +44,6 @@ use Webrtc\Exception\RuntimeException;
 #[UsesClass(Frame::class)]
 #[UsesClass(LibraryVersion::class)]
 #[UsesClass(TransCoder::class)]
-#[UsesClass(AVCodec::class)]
 #[CoversClass(AudioContext::class)]
 class AudioContextTest extends TestCase
 {

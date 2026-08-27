@@ -44,7 +44,6 @@ use Webrtc\Exception\RuntimeException;
 #[UsesClass(VideoFrame::class)]
 #[UsesClass(VideoFrameReformater::class)]
 #[UsesClass(LibraryVersion::class)]
-#[UsesClass(SWScale::class)]
 #[UsesClass(TransCoder::class)]
 #[UsesClass(Graph::class)]
 #[CoversClass(VideoContext::class)]

@@ -24,7 +24,6 @@ use Webrtc\AVCodec\SWScale;
 #[UsesClass(SWScale::class)]
 #[UsesClass(VideoFormat::class)]
 #[UsesClass(VideoFormatComponent::class)]
-#[UsesClass(SWScale::class)]
 #[UsesClass(VideoFrameReformater::class)]
 #[UsesClass(AudioChannel::class)]
 #[UsesClass(Buffer::class)]
