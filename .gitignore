@@ -4,3 +4,5 @@
 /.idea
 composer.lock
 .gitignorevendor
+.phpunit.cache
+composer.lock
