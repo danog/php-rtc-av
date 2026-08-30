@@ -43,7 +43,7 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
-      - name: Install FFmpeg 7.1.1 on Linux
+      - name: Install FFmpeg 9.0.1 on Linux
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt update
@@ -55,7 +55,7 @@ jobs:
 
           git clone https://github.com/FFmpeg/FFmpeg.git
           cd FFmpeg
-          git checkout n7.1.1
+          git checkout n9.0.1
           ./configure --enable-shared --enable-gpl --enable-nonfree \
             --enable-libx264 --enable-libx265 --enable-libvpx \
             --enable-libfdk-aac --enable-libmp3lame --enable-libopus
