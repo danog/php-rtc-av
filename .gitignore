@@ -8,5 +8,5 @@ composer.lock
 composer.lock
 .phpunit.cache
 composer.lock
-vendor-bin
-vendor-bin
+vendor
+vendor
