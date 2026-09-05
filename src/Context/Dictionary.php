@@ -204,4 +204,32 @@ class Dictionary implements SharedLibraryInterface, \Countable, \IteratorAggrega
     {
         return iterator_to_array($this->getIterator());
     }
+
+    /**
+     * @return array<string, string>
+     */
+    public function __serialize(): array
+    {
+        $pairs = [];
+        $prev = null;
+        while (true) {
+            $element = $this->libAVCodec->av_dict_get($this->dictionary, "", $prev, self::IGNORE_SUFFIX);
+            if ($element === null) {
+                break;
+            }
+            $pairs[FFI::string($element->key)] = FFI::string($element->value);
+            $prev = $element;
+        }
+
+        return $pairs;
+    }
+
+    /**
+     * @param array<string, string> $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->__construct();
+        $this->update($data);
+    }
 }

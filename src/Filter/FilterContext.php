@@ -238,4 +238,24 @@ class FilterContext implements SharedLibraryInterface
 
         return $audioFrame;
     }
+
+    /**
+     * @return array{graph: Graph, filter: string, name: string|null}
+     */
+    public function __serialize(): array
+    {
+        return [
+            'graph' => $this->graph,
+            'filter' => $this->filter->getName(),
+            'name' => $this->getName(),
+        ];
+    }
+
+    /**
+     * @param array{graph?: Graph, filter?: string, name?: string|null} $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->__construct($data['graph'], new Filter($data['filter'] ?? ''), $data['name'] ?? null);
+    }
 }

@@ -159,4 +159,44 @@ class AudioContext extends Context
     {
         $this->resampler = $resampler;
     }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function __serialize(): array
+    {
+        $data = $this->serializeContextState();
+        $data['sample_rate'] = $this->context->sample_rate;
+        $data['frame_size'] = $this->context->frame_size;
+        if (isset($this->format)) {
+            $data['format'] = $this->format->getName();
+        }
+        if (isset($this->layout)) {
+            $data['layout'] = $this->layout->getName();
+        }
+        $data['resampler'] = $this->resampler;
+
+        return $data;
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->restoreContextState($data);
+        if (isset($data['format']) && is_string($data['format'])) {
+            $this->setFormat($data['format']);
+        }
+        if (isset($data['layout']) && is_string($data['layout'])) {
+            $this->setLayout($data['layout']);
+        }
+        if (isset($data['sample_rate'])) {
+            $this->setSampleRate((int) $data['sample_rate']);
+        }
+        $this->resampler = $data['resampler'] instanceof AudioResampler ? $data['resampler'] : null;
+        if (!empty($data['open'])) {
+            $this->open(false);
+        }
+    }
 }

@@ -90,4 +90,22 @@ class OpaqueContainer
     {
         // TODO: Cleanup function if required
     }
+
+    /**
+     * @return array{byName: array}
+     */
+    public function __serialize(): array
+    {
+        return ['byName' => $this->byName];
+    }
+
+    /**
+     * @param array{byName?: array} $data
+     */
+    public function __unserialize(array $data): void
+    {
+        global $libAVCodec;
+        $this->__construct($libAVCodec);
+        $this->byName = is_array($data['byName'] ?? null) ? $data['byName'] : [];
+    }
 }

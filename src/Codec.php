@@ -360,4 +360,23 @@ class Codec implements SharedLibraryInterface
     {
         return (bool)($this->codec->capabilities & (1 << 9));
     }
+
+    /**
+     * @return array{name: string, mode: string}
+     */
+    public function __serialize(): array
+    {
+        return [
+            'name' => $this->getName(),
+            'mode' => $this->isEncoder ? 'w' : 'r',
+        ];
+    }
+
+    /**
+     * @param array{name?: string, mode?: string} $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->__construct($data['name'] ?? '', $data['mode'] ?? 'r');
+    }
 }

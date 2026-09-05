@@ -113,4 +113,20 @@ class AudioLayout implements SharedLibraryInterface
 
         $this->libAVCodec = $libAVCodec;
     }
+
+    /**
+     * @return array{name: string}
+     */
+    public function __serialize(): array
+    {
+        return ['name' => $this->getName()];
+    }
+
+    /**
+     * @param array{name?: string} $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->__construct($data['name'] ?? 'stereo');
+    }
 }

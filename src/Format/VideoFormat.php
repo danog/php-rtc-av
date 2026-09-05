@@ -249,4 +249,24 @@ class VideoFormat implements SharedLibraryInterface
     {
         return (bool)($this->videoFormat->flags & (1 << 5));
     }
+
+    /**
+     * @return array{format: int|string|null, width: int, height: int}
+     */
+    public function __serialize(): array
+    {
+        return [
+            'format' => $this->format,
+            'width' => $this->width,
+            'height' => $this->height,
+        ];
+    }
+
+    /**
+     * @param array{format?: int|string|null, width?: int, height?: int} $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->__construct($data['format'] ?? null, $data['width'] ?? 0, $data['height'] ?? 0);
+    }
 }

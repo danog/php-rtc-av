@@ -182,4 +182,20 @@ class AudioFormat implements SharedLibraryInterface
     {
         return $this->sampleFormat;
     }
+
+    /**
+     * @return array{sampleFormat: int}
+     */
+    public function __serialize(): array
+    {
+        return ['sampleFormat' => $this->sampleFormat];
+    }
+
+    /**
+     * @param array{sampleFormat?: int} $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->__construct($data['sampleFormat'] ?? 0);
+    }
 }

@@ -173,4 +173,47 @@ class AudioFrame extends Frame
     {
         return $this->layout;
     }
+
+    /**
+     * @return array{format: string, layout: string, samples: int, sampleRate: int, pts: int|null, timeBase: \stdClass, planes: list<string>}
+     */
+    public function __serialize(): array
+    {
+        $planes = [];
+        foreach ($this->getPlanes() as $plane) {
+            $planes[] = $plane->getData();
+        }
+
+        return [
+            'format' => $this->format->getName(),
+            'layout' => $this->layout->getName(),
+            'samples' => $this->getSamples(),
+            'sampleRate' => $this->getSampleRate(),
+            'pts' => $this->getPts(),
+            'timeBase' => $this->timeBase,
+            'planes' => $planes,
+        ];
+    }
+
+    /**
+     * @param array{format?: string, layout?: string, samples?: int, sampleRate?: int, pts?: int|null, timeBase?: \stdClass, planes?: list<string>} $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->__construct($data['format'] ?? 's16', $data['layout'] ?? 'stereo', $data['samples'] ?? 0);
+        if (isset($data['sampleRate'])) {
+            $this->setSampleRate($data['sampleRate']);
+        }
+        if (array_key_exists('pts', $data)) {
+            $this->setPts($data['pts']);
+        }
+        if (isset($data['timeBase']) && $data['timeBase'] instanceof \stdClass) {
+            $this->timeBase = $data['timeBase'];
+        }
+        foreach ($data['planes'] ?? [] as $index => $payload) {
+            if ($payload !== '') {
+                $this->putData($payload, $index);
+            }
+        }
+    }
 }

@@ -268,4 +268,25 @@ class TransCoder implements TransCoderInterface, SharedLibraryInterface
             $this->libAVCodec = $libAVCodec;
         }
     }
+
+    /**
+     * @return array{context: ContextInterface, nextFrame: FrameInterface|null}
+     */
+    public function __serialize(): array
+    {
+        return [
+            'context' => $this->context,
+            'nextFrame' => $this->nextFrame,
+        ];
+    }
+
+    /**
+     * @param array{context?: ContextInterface, nextFrame?: FrameInterface|null} $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->initiateSharedLibrary();
+        $this->context = $data['context'];
+        $this->nextFrame = $data['nextFrame'] ?? null;
+    }
 }

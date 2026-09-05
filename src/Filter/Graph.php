@@ -274,5 +274,27 @@ class Graph implements SharedLibraryInterface
     {
         return $this->graph;
     }
+
+    /**
+     * @return array{nameCounts: array}
+     */
+    public function __serialize(): array
+    {
+        return ['nameCounts' => $this->nameCounts];
+    }
+
+    /**
+     * @param array{nameCounts?: array} $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->__construct();
+        $this->nameCounts = is_array($data['nameCounts'] ?? null) ? $data['nameCounts'] : [];
+        $this->configured = false;
+        $this->nbFiltersSeen = 0;
+        $this->contextByPtr = [];
+        $this->contextByName = [];
+        $this->contextByType = [];
+    }
 }
 

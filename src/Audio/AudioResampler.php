@@ -177,4 +177,30 @@ class AudioResampler
             throw new InvalidArgumentException("Frame does not match AudioResampler setup.");
         }
     }
+
+    /**
+     * @return array{format: AudioFormat|null, layout: string|null, rate: int, frameSize: int|null}
+     */
+    public function __serialize(): array
+    {
+        return [
+            'format' => $this->format,
+            'layout' => $this->layout,
+            'rate' => $this->rate,
+            'frameSize' => $this->frameSize,
+        ];
+    }
+
+    /**
+     * @param array{format?: AudioFormat|null, layout?: string|null, rate?: int, frameSize?: int|null} $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->format = $data['format'] ?? null;
+        $this->layout = $data['layout'] ?? null;
+        $this->rate = $data['rate'] ?? 0;
+        $this->frameSize = $data['frameSize'] ?? null;
+        $this->graph = null;
+        $this->isPassthrough = false;
+    }
 }

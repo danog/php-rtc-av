@@ -378,4 +378,72 @@ abstract class Context implements SharedLibraryInterface, ContextInterface
             $this->context->extradata_size = $length;
         }
     }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function serializeContextState(): array
+    {
+        return [
+            'codecName' => $this->codec->getName(),
+            'codecMode' => $this->codec->isEncoder() ? 'w' : 'r',
+            'options' => $this->options,
+            'encodedFrameCount' => $this->encodedFrameCount,
+            'bitrate' => $this->context->bit_rate,
+            'extradata' => $this->getExtradata(),
+            'open' => (bool) $this->libAVCodec->avcodec_is_open($this->context),
+            'codec_tag' => $this->context->codec_tag,
+            'profile' => $this->context->profile,
+            'time_base' => [$this->context->time_base->num, $this->context->time_base->den],
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    protected function restoreContextState(array $data): void
+    {
+        $this->initiateSharedLibrary();
+        $this->codec = new Codec((string) ($data['codecName'] ?? ''), (string) ($data['codecMode'] ?? 'r'));
+        $this->context = $this->libAVCodec->avcodec_alloc_context3($this->codec->getCodec());
+        $this->context->thread_count = 0;
+        $this->context->thread_type = 2;
+        $this->options = is_array($data['options'] ?? null) ? $data['options'] : [];
+        $this->encodedFrameCount = (int) ($data['encodedFrameCount'] ?? 0);
+        $this->extraDataSet = false;
+        if (isset($data['bitrate'])) {
+            $this->setBitRate((int) $data['bitrate']);
+        }
+        if (isset($data['codec_tag'])) {
+            $this->context->codec_tag = (int) $data['codec_tag'];
+        }
+        if (isset($data['profile'])) {
+            $this->profile((int) $data['profile']);
+        }
+        if (isset($data['time_base']) && is_array($data['time_base']) && !$this->codec->isDecoder()) {
+            $this->setTimeBase((int) $data['time_base'][0], (int) $data['time_base'][1]);
+        }
+        if (array_key_exists('extradata', $data)) {
+            $this->setExtradata(is_string($data['extradata']) ? $data['extradata'] : null);
+        }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function __serialize(): array
+    {
+        return $this->serializeContextState();
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->restoreContextState($data);
+        if (!empty($data['open'])) {
+            $this->open(false);
+        }
+    }
 }

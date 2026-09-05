@@ -41,6 +41,25 @@ class VideoFormatComponent
     }
 
     /**
+     * @return array{videoFormat: VideoFormat, index: int}
+     */
+    public function __serialize(): array
+    {
+        return [
+            'videoFormat' => $this->videoFormat,
+            'index' => $this->index,
+        ];
+    }
+
+    /**
+     * @param array{videoFormat?: VideoFormat, index?: int} $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->__construct($data['videoFormat'], $data['index'] ?? 0);
+    }
+
+    /**
      * Get parent video format
      *
      * @return VideoFormat Associated video format

@@ -300,5 +300,57 @@ class VideoFrame extends Frame
         );
     }
 
+    /**
+     * @return array{width: int, height: int, format: string, pts: int|null, timeBase: \stdClass, pictType: int, colorspace: mixed, colorRange: mixed, planes: list<string>}
+     */
+    public function __serialize(): array
+    {
+        $planes = [];
+        foreach ($this->planes() as $plane) {
+            $planes[] = $plane->getData();
+        }
 
+        return [
+            'width' => $this->frame->width,
+            'height' => $this->frame->height,
+            'format' => $this->videFormat->getName(),
+            'pts' => $this->getPts(),
+            'timeBase' => $this->timeBase,
+            'pictType' => $this->frame->pict_type,
+            'colorspace' => $this->frame->colorspace,
+            'colorRange' => $this->frame->color_range,
+            'planes' => $planes,
+        ];
+    }
+
+    /**
+     * @param array{width?: int, height?: int, format?: string, pts?: int|null, timeBase?: \stdClass, pictType?: int, colorspace?: mixed, colorRange?: mixed, planes?: list<string>} $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->__construct($data['width'] ?? 0, $data['height'] ?? 0, $data['format'] ?? 'yuv420p');
+        if (array_key_exists('pts', $data)) {
+            $this->setPts($data['pts']);
+        }
+        if (isset($data['timeBase']) && $data['timeBase'] instanceof \stdClass) {
+            $this->timeBase = $data['timeBase'];
+        }
+        if (isset($data['pictType'])) {
+            $this->setPictType($data['pictType']);
+        }
+        if (array_key_exists('colorspace', $data)) {
+            $this->setColorspace($data['colorspace']);
+        }
+        if (array_key_exists('colorRange', $data)) {
+            $this->setColorRange($data['colorRange']);
+        }
+        $index = 0;
+        foreach ($this->planes() as $plane) {
+            $payload = $data['planes'][$index] ?? '';
+            if ($payload !== '') {
+                $plane->putData($payload);
+            }
+            $index++;
+        }
+    }
 }

@@ -218,4 +218,47 @@ class VideoContext extends Context
 
         $this->context->gop_size = $value;
     }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function __serialize(): array
+    {
+        $data = $this->serializeContextState();
+        $data['width'] = $this->context->width;
+        $data['height'] = $this->context->height;
+        $data['pix_fmt'] = $this->context->pix_fmt;
+        $data['gop_size'] = $this->context->gop_size;
+        $data['framerate'] = [$this->context->framerate->num, $this->context->framerate->den];
+        $data['hasFormat'] = isset($this->format) && $this->format !== null;
+
+        return $data;
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->restoreContextState($data);
+        if (isset($data['width'])) {
+            $this->setWidth((int) $data['width']);
+        }
+        if (isset($data['height'])) {
+            $this->setHeight((int) $data['height']);
+        }
+        if (!empty($data['hasFormat']) && isset($data['pix_fmt'])) {
+            $this->format = new VideoFormat((int) $data['pix_fmt'], $this->context->width, $this->context->height);
+            $this->context->pix_fmt = (int) $data['pix_fmt'];
+        }
+        if (isset($data['gop_size']) && !$this->codec->isDecoder()) {
+            $this->setGopSize((int) $data['gop_size']);
+        }
+        if (isset($data['framerate']) && is_array($data['framerate'])) {
+            $this->setFramerate((int) $data['framerate'][0], (int) $data['framerate'][1]);
+        }
+        if (!empty($data['open'])) {
+            $this->open(false);
+        }
+    }
 }

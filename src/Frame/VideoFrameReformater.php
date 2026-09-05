@@ -57,7 +57,26 @@ class VideoFrameReformater implements SharedLibraryInterface
      */
     public function __destruct()
     {
-        $this->libSWScale->sws_freeContext($this->ctx);
+        if (isset($this->ctx) && $this->ctx !== null && isset($this->libSWScale)) {
+            $this->libSWScale->sws_freeContext($this->ctx);
+        }
+    }
+
+    /**
+     * @return array{}
+     */
+    public function __serialize(): array
+    {
+        return [];
+    }
+
+    /**
+     * @param array $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->__construct();
+        $this->ctx = null;
     }
 
     /**

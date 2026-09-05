@@ -154,4 +154,40 @@ class Packet extends Buffer
     {
         return $this->timeBase;
     }
+
+    /**
+     * @return array{payload: string, pts: int|null, timeBase: stdClass, bufferWritable: bool}
+     */
+    public function __serialize(): array
+    {
+        $this->initiateSharedLibrary();
+
+        return [
+            'payload' => $this->getSize() > 0 ? $this->getData() : '',
+            'pts' => $this->getPts(),
+            'timeBase' => $this->timeBase,
+            'bufferWritable' => $this->bufferWritable,
+        ];
+    }
+
+    /**
+     * @param array{payload?: string, pts?: int|null, timeBase?: stdClass, bufferWritable?: bool} $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->__construct();
+        $payload = $data['payload'] ?? '';
+        if ($payload !== '') {
+            $this->putData($payload);
+        }
+        if (array_key_exists('pts', $data)) {
+            $this->setPts($data['pts']);
+        }
+        if (isset($data['timeBase']) && $data['timeBase'] instanceof stdClass) {
+            $this->timeBase = $data['timeBase'];
+        }
+        if (isset($data['bufferWritable'])) {
+            $this->bufferWritable = $data['bufferWritable'];
+        }
+    }
 }

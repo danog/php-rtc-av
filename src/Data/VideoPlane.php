@@ -212,4 +212,25 @@ class VideoPlane extends Buffer
 //            $this->buffer = null;
 //        }
     }
+
+    /**
+     * @return array{frame: VideoFrame, index: int, bufferWritable: bool}
+     */
+    public function __serialize(): array
+    {
+        return [
+            'frame' => $this->frame,
+            'index' => $this->index,
+            'bufferWritable' => $this->bufferWritable,
+        ];
+    }
+
+    /**
+     * @param array{frame?: VideoFrame, index?: int, bufferWritable?: bool} $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->__construct($data['frame'], $data['index'] ?? 0);
+        $this->bufferWritable = $data['bufferWritable'] ?? true;
+    }
 }
