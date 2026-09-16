@@ -17,7 +17,6 @@ use Webrtc\AVCodec\Filter\Graph;
 use Webrtc\AVCodec\Format\AudioFormat;
 use Webrtc\AVCodec\Frame\AudioFrame;
 use Webrtc\Exception\InvalidArgumentException;
-use Webrtc\Exception\RuntimeException;
 
 /**
  * Class AudioResampler
@@ -87,12 +86,12 @@ class AudioResampler
         $this->graph->push($frame);
         $output = [];
 
-        // Collect all frames from the resampler output.
+        // Collect all frames from the resampler output. pull() throws AvCodecException with the
+        // EAGAIN code when there is simply no more output to drain; any other exception is a real
+        // resampling failure and must propagate rather than be silently treated as end-of-output.
         while (true) {
             try {
                 $output[] = $this->graph->pull();
-            } catch (RuntimeException) {
-                break;
             } catch (AvCodecException $e) {
                 if ($e->getCode() !== EAGAIN) {
                     throw $e;

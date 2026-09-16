@@ -137,7 +137,8 @@ class FilterContext implements SharedLibraryInterface
      * Pull a frame from the filter context.
      *
      * @return FrameInterface The pulled frame.
-     * @throws AvCodecException
+     * @throws AvCodecException When no frame is currently available (EAGAIN) or the stream ended (EOF).
+     * @throws RuntimeException When av_buffersink_get_frame reports a genuine error.
      */
     public function pull(): FrameInterface
     {
@@ -145,8 +146,15 @@ class FilterContext implements SharedLibraryInterface
         $this->graph->configure();
         $ret = $this->libAVFilter->av_buffersink_get_frame($this->ctx, $frame);
 
+        // EAGAIN (need more input) and EOF both mean "no more output right now". Signal that
+        // with the EAGAIN code so callers can tell it apart from a real libav failure below;
+        // otherwise a genuine error would be indistinguishable from normal end-of-output.
+        if ($ret === -EAGAIN || $ret === AVERROR_EOF) {
+            throw new AvCodecException("No frame available from filter context.", EAGAIN);
+        }
+
         if ($ret < 0) {
-            throw new RuntimeException("Cannot initiate filter context.");
+            throw new RuntimeException("Cannot pull frame from filter context (error {$ret}).");
         }
 
         return $this->generateFrame($frame);
